@@ -9,5 +9,5 @@ const messageSchema = new Schema({
     user: { type: Schema.Types.ObjectId, ref: 'User' }
 });
 
-const Message = model('FoodPost', messageSchema);
+const Message = model('Message', messageSchema);
 module.exports = Message;

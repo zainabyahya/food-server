@@ -8,4 +8,6 @@ const statusSchema = new Schema({
     }
 });
 
-module.exports = mongoose.model('Status', statusSchema);
+
+const Status = mongoose.model('Status', statusSchema);
+module.exports = Status;

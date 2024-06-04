@@ -34,25 +34,6 @@ const authenticateToken = async (req, res, next) => {
     }
 };
 
-const isAuthor = async (req, res, next) => {
-    try {
-        const blogId = req.params.blogPostId;
-        const post = await BlogPost.findById(blogId);
-        if (!post) {
-            return res.status(404).send('Post not found');
-        }
-
-        if (post.author.toString() !== req.user.userId.toString()) {
-            return res.status(403).send('Forbidden: You are not the author of this post');
-        }
-
-        req.post = post;
-        next();
-    } catch (error) {
-        next(error);
-    }
-};
-
 const authenticateUser = async (req, res, next) => {
     try {
         const userId = req.user.userId;

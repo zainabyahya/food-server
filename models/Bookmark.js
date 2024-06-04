@@ -6,4 +6,5 @@ const bookmarkSchema = new Schema({
     posts: [{ type: Schema.Types.ObjectId, ref: 'Post' }]
 });
 
-module.exports = mongoose.model('Bookmark', bookmarkSchema);
+const Bookmark = mongoose.model('Bookmark', bookmarkSchema);
+module.exports = Bookmark;

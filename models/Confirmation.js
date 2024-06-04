@@ -8,4 +8,6 @@ const confirmationSchema = new Schema({
     status: { type: Schema.Types.ObjectId, ref: 'Status', default: "pending" }
 });
 
-module.exports = mongoose.model('Confirmation', confirmationSchema);
+
+const Confirmation = mongoose.model('Confirmation', confirmationSchema);
+module.exports = Confirmation;
