@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const statusSchema = new Schema({
     status: {
         type: String,
-        enum: ["pending", "confirmed", "denied"]
+        enum: ["pending", "confirmed", "denied", "partiallyConfirmed"]
     }
 });
 

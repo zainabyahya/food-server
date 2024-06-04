@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const bcrypt = require('bcrypt');
-const BlogPost = require("../models/BlogPost")
+
 
 const verifyAccessToken = async (token) => {
     try {
@@ -51,4 +51,4 @@ const authenticateUser = async (req, res, next) => {
     }
 };
 
-module.exports = { authenticateToken, isAuthor, authenticateUser };
+module.exports = { authenticateToken, authenticateUser };

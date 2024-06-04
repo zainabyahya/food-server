@@ -7,5 +7,5 @@ const addressSchema = new Schema({
     user: { type: Schema.Types.ObjectId, ref: 'User' }
 });
 
-const Address = model('Address', addressSchema);
+const Address = mongoose.model('Address', addressSchema);
 module.exports = Address;

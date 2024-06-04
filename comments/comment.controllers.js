@@ -13,6 +13,7 @@ const getAllComments = async (req, res, next) => {
 const getCommentsByPost = async (req, res, next) => {
     try {
         const { postId } = req.params;
+        console.log("🚀 ~ getCommentsByPost ~ postId:", postId)
         const foundComments = await Comment.find({ post: postId }).populate("user");
         res.status(200).json({ foundComments });
     } catch (error) {
@@ -41,7 +42,7 @@ const deleteComment = async (req, res, next) => {
         const { commentId } = req.params;
 
         const foundComment = await Comment.findByIdAndDelete(commentId);
-        await BlogPost.findByIdAndDelete(postId, { $pull: { comments: foundComment._id } });
+        await BlogPost.findByIdAndDelete(foundComment.post, { $pull: { comments: foundComment._id } });
 
         res.status(204).end();
     } catch (error) {

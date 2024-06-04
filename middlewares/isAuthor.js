@@ -1,6 +1,7 @@
 const BlogPost = require("../models/BlogPost");
 const Comment = require("../models/Comment");
 const Message = require("../models/Message");
+const FoodPost = require("../models/FoodPost");
 
 
 const isPostAuthor = async (req, res, next) => {
@@ -15,7 +16,26 @@ const isPostAuthor = async (req, res, next) => {
             return res.status(403).send('Forbidden: You are not the author of this post');
         }
 
-        req.post = post;
+        req.blogPost = post;
+        next();
+    } catch (error) {
+        next(error);
+    }
+};
+
+const isFoodAuthor = async (req, res, next) => {
+    try {
+        const foodPostId = req.params.foodPostId;
+        const post = await FoodPost.findById(foodPostId);
+        if (!post) {
+            return res.status(404).send('Post not found');
+        }
+
+        if (post.owner.toString() !== req.user.userId.toString()) {
+            return res.status(403).send('Forbidden: You are not the author of this post');
+        }
+
+        req.foodPost = post;
         next();
     } catch (error) {
         next(error);
@@ -58,4 +78,4 @@ const isMessageAuthor = async (req, res, next) => {
         next(error);
     }
 };
-module.exports = { isPostAuthor, isCommentAuthor, isMessageAuthor };
+module.exports = { isPostAuthor, isFoodAuthor, isCommentAuthor, isMessageAuthor };

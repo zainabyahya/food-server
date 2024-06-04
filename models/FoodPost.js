@@ -14,8 +14,18 @@ const foodPostSchema = new Schema({
         type: String,
         required: true,
     },
-    location: { type: [Number], index: { type: '2dsphere', sparse: true } },
-    datePosted: {
+    location: {
+        type: {
+            type: String,
+            default: 'Point',
+            enum: ['Point']
+        },
+        coordinates: {
+            type: [Number],
+            required: true
+        }
+    },
+    dateCreated: {
         type: Date,
         required: true
     },
@@ -26,6 +36,6 @@ const foodPostSchema = new Schema({
 
 });
 
-const FoodPost = model('FoodPost', foodPostSchema);
+const FoodPost = mongoose.model('FoodPost', foodPostSchema);
 module.exports = FoodPost;
 

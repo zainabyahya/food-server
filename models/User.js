@@ -31,5 +31,5 @@ const userSchema = new Schema({
     bookmark: { type: Schema.Types.ObjectId, ref: 'Bookmark' }
 });
 
-const User = model('User', userSchema);
+const User = mongoose.model('User', userSchema);
 module.exports = User;

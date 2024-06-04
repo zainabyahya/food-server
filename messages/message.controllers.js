@@ -1,3 +1,4 @@
+const Chatroom = require("../models/Chatroom");
 const Message = require("../models/Message");
 
 
@@ -23,11 +24,13 @@ const getMessagesByUser = async (req, res, next) => {
 
 const addMessage = async (req, res, next) => {
     try {
+        const chatroomId = req.body.chatroom
         const newMessageData = {
             ...req.body,
             user: req.user.userId
         }
         const newMessage = await Message.create(newMessageData);
+        await Chatroom.findByIdAndUpdate(chatroomId, { $push: { messages: newMessage._id } });
 
         res.status(201).json({ newMessage });
     } catch (error) {
@@ -37,8 +40,10 @@ const addMessage = async (req, res, next) => {
 
 const deleteMessage = async (req, res, next) => {
     try {
+        const chatroomId = req.body.chatroom
         const messageId = req.params.messageId;
-        await Message.findByIdAndDelete(messageId);
+        const foundMessage = await Message.findByIdAndDelete(messageId);
+        await Chatroom.findByIdAndUpdate(chatroomId, { $pull: { messages: foundMessage._id } });
 
         res.status(204).end();
     } catch (error) {
@@ -50,6 +55,7 @@ const updateMessage = async (req, res, next) => {
     try {
         const messageId = req.params.messageId;
         const updatedMessage = await Message.findByIdAndUpdate(messageId, req.body, { new: true });
+
         res.status(201).json({ updatedMessage });
     } catch (error) {
         next(error);

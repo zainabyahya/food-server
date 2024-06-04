@@ -23,7 +23,7 @@ const getChatroomsById = async (req, res, next) => {
 };
 const addChatroom = async (req, res, next) => {
     try {
-        const users = req.body;
+        const { users } = req.body;
         const newChatroom = await Chatroom.create({ users: users });
 
         res.status(201).json({ newChatroom });

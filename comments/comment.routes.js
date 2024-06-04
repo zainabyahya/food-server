@@ -7,7 +7,7 @@ const { isCommentAuthor } = require("../middlewares/isAuthor.js");
 
 router.get("/", getAllComments);
 
-router.get("/post/:postId", isCommentAuthor, getCommentsByPost);
+router.get("/post/:postId", getCommentsByPost);
 
 router.post("/", authenticateToken, addComment);
 
