@@ -7,24 +7,13 @@ var validateNumber = function (number) {
 
 
 const addressSchema = new Schema({
-    location: {
-        type: {
-            type: String,
-            default: 'Point',
-            enum: ['Point']
-        },
-        coordinates: {
-            type: [Number],
-            required: true
-        }
-    },
+    location: { type: Schema.Types.String, ref: 'Location' },
     street: String,
     neighborhood: String,
     phoneNumber: {
         type: String,
         unique: true,
-        required: 'رقم الهاتف مطلوب',
-        validate: [validateNumber, 'الرجاء ادخال رقم صالح'],
+        validate: [validateNumber, "الرجاء ادخال الرقم بشكل صحيح"],
     },
     user: { type: Schema.Types.ObjectId, ref: 'User' }
 });

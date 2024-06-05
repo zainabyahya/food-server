@@ -14,19 +14,9 @@ const foodPostSchema = new Schema({
         type: String,
         required: true,
     },
-    location: {
-        type: {
-            type: String,
-            default: 'Point',
-            enum: ['Point']
-        },
-        coordinates: {
-            type: [Number],
-            required: true
-        }
-    },
+    location: { type: Schema.Types.ObjectId, ref: 'Location' },
     dateCreated: {
-        type: Date,
+        type: String,
         required: true
     },
     owner: {

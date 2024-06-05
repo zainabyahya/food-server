@@ -15,11 +15,17 @@ async function updateConfirmationStatus(confirmation) {
         confirmation.status = "rejected";
     }
     await confirmation.save();
+    return confirmation.status;
 }
 
 const createConfirmation = async (req, res, next) => {
     try {
-        const newConfirmation = Confirmation.create(req.body);
+        const confirmationData = {
+            ...req.body,
+            status: "pending"
+        }
+
+        const newConfirmation = await Confirmation.create(confirmationData);
         res.status(201).json({ newConfirmation });
     } catch (error) {
         next(error);
@@ -27,8 +33,8 @@ const createConfirmation = async (req, res, next) => {
 };
 
 const updateConfirmation = async (req, res, next) => {
-    const confirmationId = req.params.id;
-    const userId = req.user.userId
+    const confirmationId = req.params.conId;
+    const userId = req.user.userId;
     try {
         const confirmation = await Confirmation.findById(confirmationId);
         if (!confirmation) {
@@ -44,20 +50,25 @@ const updateConfirmation = async (req, res, next) => {
             }
             return acc;
         }, {});
+
         confirmation.set(updates);
         await confirmation.save();
         const currentStatus = await updateConfirmationStatus(confirmation);
         if (currentStatus === "confirmed") {
-            await FoodPost.findByIdAndDelete(confirmation.post)
+            try {
+                await FoodPost.findByIdAndDelete(confirmation.post);
+            } catch (error) {
+                console.error("Error deleting post:", error);
+            }
         }
-        res.json(confirmation);
+        res.status(201).json({ confirmation });
     } catch (error) {
         next(error);
     }
 };
 
 const checkConfirmationStatus = async (req, res, next) => {
-    const confirmationId = req.params.id;
+    const confirmationId = req.params.conId;
     try {
         const confirmation = await Confirmation.findById(confirmationId);
         if (!confirmation) {

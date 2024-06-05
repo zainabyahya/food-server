@@ -1,12 +1,14 @@
 const express = require('express');
 const { getConfirmationByPostId, getConfirmationByUsersIds, createConfirmation, checkConfirmationStatus, updateConfirmation } = require('./confirmation.controllers');
 const router = express.Router();
+const { authenticateToken } = require("../middlewares/auth.js");
 
-router.post('/', createConfirmation);
 
-router.put('/:id', updateConfirmation);
+router.post('/', authenticateToken, createConfirmation);
 
-router.get('/:id/status', checkConfirmationStatus);
+router.put('/:conId', authenticateToken, updateConfirmation);
+
+router.get('/:conId/status', checkConfirmationStatus);
 
 router.get('/post/:postId', getConfirmationByPostId);
 

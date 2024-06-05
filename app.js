@@ -9,7 +9,7 @@ const cors = require('cors');
 const connectDB = require("./database.js");
 connectDB();
 
-const addressRoutes = require("./routes/addressRoutes");
+const addressRoutes = require("./addresses/address.routes.js");
 const authRoutes = require("./auth/auth.routes.js");
 const blogRoutes = require("./blog/blog.routes.js");
 const bookmarkRoutes = require("./bookmarks/bookmark.routes.js");

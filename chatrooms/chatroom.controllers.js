@@ -14,7 +14,7 @@ const getAllChatrooms = async (req, res, next) => {
 const getChatroomsById = async (req, res, next) => {
     try {
         const { chatroomId } = req.params;
-        const foundChatrooms = await Chatroom.findById(chatroomId).populate('users');
+        const foundChatrooms = await Chatroom.findById(chatroomId).populate('messages');
 
         res.status(200).json({ foundChatrooms });
     } catch (error) {

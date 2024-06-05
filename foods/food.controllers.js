@@ -1,4 +1,5 @@
 const FoodPost = require('../models/FoodPost');
+const Location = require('../models/Location');
 
 const addFoodPost = async (req, res, next) => {
     try {
@@ -6,13 +7,18 @@ const addFoodPost = async (req, res, next) => {
         const imageFile = req.file;
         const imageUrl = "images/" + imageFile?.filename;
 
-        const parsedLocation = JSON.parse(req.body.location);
+        const newLocation = new Location({
+            longitude: req.body.longitude,
+            latitude: req.body.latitude
+        });
+        const savedLocation = await newLocation.save();
 
+        const currentDate = new Date();
         const newFoodPostData = {
             ...req.body,
-            location: parsedLocation,
+            location: savedLocation,
             owner: req.user.userId,
-            dateCreated: Date.now(),
+            dateCreated: currentDate.toDateString(),
             image: imageUrl
         }
         const newFoodPost = await FoodPost.create(newFoodPostData);

@@ -54,7 +54,7 @@ const addBlogPost = async (req, res, next) => {
 
 const deleteBlogPost = async (req, res, next) => {
     try {
-        const postId = req.post._id;
+        const postId = req.params.blogPostId;
         const foundPost = await BlogPost.findByIdAndDelete(postId);
 
         if (foundPost.image) {
@@ -82,10 +82,14 @@ const deleteBlogPost = async (req, res, next) => {
 };
 
 const updateBlogPost = async (req, res, next) => {
+
     try {
+        console.log(req.body);
         let imageUrl = "images/";
         let newPostData = {};
-        const blogPost = req.post;
+        const blogPost = req.body;
+        const postId = req.params.blogPostId;
+        console.log("🚀 ~ updateBlogPost ~ blogPost:", blogPost)
 
         if (req.file) {
             const imageFile = req.file;
@@ -99,8 +103,9 @@ const updateBlogPost = async (req, res, next) => {
                 ...req.body,
             }
         }
+        console.log("🚀 ~ updateBlogPost ~ newPostData:", newPostData)
 
-        const updatedBlogPost = await BlogPost.findByIdAndUpdate(blogPost._id, newPostData, { new: true });
+        const updatedBlogPost = await BlogPost.findByIdAndUpdate(postId, newPostData, { new: true });
         res.status(201).json({ updatedBlogPost });
     } catch (error) {
         next(error);
