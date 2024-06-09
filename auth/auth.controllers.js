@@ -2,6 +2,8 @@ const User = require("../models/User.js");
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
+const getFirebaseImgUrl = require("../services/firebaseStorageService");
+
 const generateToken = (userCredentials) => {
     const payload = {
         userId: userCredentials._id,
@@ -48,7 +50,6 @@ const login = async (req, res, next) => {
 };
 
 const signUp = async (req, res, next) => {
-    console.log("🚀 ~ signUp ~ req.body:", req.body)
 
     try {
         const existingUser = await User.findOne({ phoneNumber: req.body.phoneNumber });
@@ -59,13 +60,23 @@ const signUp = async (req, res, next) => {
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
         req.body.password = hashedPassword;
 
-        const imageFile = req.file;
-        const imageUrl = "images/" + imageFile.filename;
 
         const newUserData = {
             ...req.body,
-            image: imageUrl,
         };
+
+
+        if (req.file) {
+            const imageURL = await getFirebaseImgUrl(
+                "profile-images",
+                req.file.path,
+                req.file.originalname
+            );
+            console.log("imageURL" + imageURL);
+
+            newUserData.image = imageURL;
+        }
+
         const newUser = await User.create(newUserData);
         const generatedToken = generateToken(newUser);
         res.status(201).json({ generatedToken });

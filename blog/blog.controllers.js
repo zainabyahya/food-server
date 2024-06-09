@@ -2,6 +2,7 @@ const BlogPost = require("../models/BlogPost");
 const Bookmark = require("../models/Bookmark");
 const path = require("path");
 const fs = require("fs");
+const getFirebaseImgUrl = require("../services/firebaseStorageService");
 
 const getAllBlogPosts = async (req, res, next) => {
     try {
@@ -34,15 +35,22 @@ const getBlogPostByAuthor = async (req, res, next) => {
 
 const addBlogPost = async (req, res, next) => {
     try {
-        const imageFile = req.file;
-        const imageUrl = "images/" + imageFile?.filename;
-
         const newBlogPostData = {
             ...req.body,
             author: req.user.userId,
             dateCreated: Date.now(),
-            image: imageUrl,
         };
+
+        if (req.file) {
+            const imageURL = await getFirebaseImgUrl(
+                "blog-images",
+                req.file.path,
+                req.file.originalname
+            );
+            console.log("imageURL" + imageURL);
+
+            newBlogPostData.image = imageURL;
+        }
 
         const newBlogPost = await BlogPost.create(newBlogPostData);
 
@@ -85,24 +93,20 @@ const updateBlogPost = async (req, res, next) => {
 
     try {
         console.log(req.body);
-        let imageUrl = "images/";
-        let newPostData = {};
-        const blogPost = req.body;
+        let newPostData = { ...req.body };
         const postId = req.params.blogPostId;
-        console.log("🚀 ~ updateBlogPost ~ blogPost:", blogPost)
 
         if (req.file) {
-            const imageFile = req.file;
-            imageUrl += imageFile.filename;
-            newPostData = {
-                ...req.body,
-                image: imageUrl,
-            }
-        } else {
-            newPostData = {
-                ...req.body,
-            }
+            const imageURL = await getFirebaseImgUrl(
+                "blog-images",
+                req.file.path,
+                req.file.originalname
+            );
+            console.log("imageURL" + imageURL);
+
+            newPostData.image = imageURL;
         }
+
         console.log("🚀 ~ updateBlogPost ~ newPostData:", newPostData)
 
         const updatedBlogPost = await BlogPost.findByIdAndUpdate(postId, newPostData, { new: true });

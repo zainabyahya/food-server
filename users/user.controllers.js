@@ -1,7 +1,7 @@
-
 const path = require("path");
 const fs = require("fs");
 const User = require("../models/User.js");
+const getFirebaseImgUrl = require("../services/firebaseStorageService");
 
 const getAllUsers = async (req, res, next) => {
     try {
@@ -49,21 +49,19 @@ const updateUser = async (req, res, next) => {
     try {
         const userId = req.user.userId;
         let imageUrl = "images/";
-        let newUserdata = {};
-
-        if (req.file) {
-            const imageFile = req.file;
-            imageUrl += imageFile.filename;
-            newUserdata = {
-                ...req.body,
-                image: imageUrl,
-            }
-        } else {
-            newUserdata = {
-                ...req.body,
-            }
+        let newUserdata = {
+            ...req.body,
         }
+        if (req.file) {
+            const imageURL = await getFirebaseImgUrl(
+                "profile-images",
+                req.file.path,
+                req.file.originalname
+            );
+            console.log("imageURL" + imageURL);
 
+            newUserData.image = imageURL;
+        }
         const updatedUser = await User.findByIdAndUpdate(userId, newUserdata, { new: true });
 
         res.status(201).json({ updatedUser });

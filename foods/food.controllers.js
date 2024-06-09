@@ -1,11 +1,10 @@
 const FoodPost = require('../models/FoodPost');
 const Location = require('../models/Location');
 
+const getFirebaseImgUrl = require("../services/firebaseStorageService");
+
 const addFoodPost = async (req, res, next) => {
     try {
-        console.log("🚀 ~ addFoodPost ~ req.body:", req.body)
-        const imageFile = req.file;
-        const imageUrl = "images/" + imageFile?.filename;
 
         const newLocation = new Location({
             longitude: req.body.longitude,
@@ -19,7 +18,16 @@ const addFoodPost = async (req, res, next) => {
             location: savedLocation,
             owner: req.user.userId,
             dateCreated: currentDate.toDateString(),
-            image: imageUrl
+        }
+        if (req.file) {
+            const imageURL = await getFirebaseImgUrl(
+                "food-images",
+                req.file.path,
+                req.file.originalname
+            );
+            console.log("imageURL" + imageURL);
+
+            newFoodPostData.image = imageURL;
         }
         const newFoodPost = await FoodPost.create(newFoodPostData);
         res.status(201).json({ newFoodPost });
@@ -31,20 +39,18 @@ const addFoodPost = async (req, res, next) => {
 const updateFoodPost = async (req, res, next) => {
     try {
         const { foodPostId } = req.params;
-        let imageUrl = "images/";
-        let newPostData = {};
-
+        const newPostData = {
+            ...req.body,
+        }
         if (req.file) {
-            const imageFile = req.file;
-            imageUrl += imageFile.filename;
-            newPostData = {
-                ...req.body,
-                image: imageUrl,
-            }
-        } else {
-            newPostData = {
-                ...req.body,
-            }
+            const imageURL = await getFirebaseImgUrl(
+                "food-images",
+                req.file.path,
+                req.file.originalname
+            );
+            console.log("imageURL" + imageURL);
+
+            newPostData.image = imageURL;
         }
 
         const updatedFoodPost = await FoodPost.findByIdAndUpdate(foodPostId, newPostData, { new: true });
