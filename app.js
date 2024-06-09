@@ -19,6 +19,7 @@ const chatroomRoutes = require("./chatrooms/chatroom.routes.js");
 const foodRoutes = require("./foods/food.routes.js");
 const messageRoutes = require("./messages/message.routes.js");
 const userRoutes = require("./users/user.routes.js");
+const errorHandling = require('./middlewares/errorHandling.js');
 
 app.use(express.json());
 app.use(cors());
@@ -45,6 +46,8 @@ app.get('/', (req, res) => {
 app.use('*', (req, res) => {
   res.status(404).json({ "message": "Page does not exist. Try again!" });
 });
+
+app.use(errorHandling)
 
 const port = 8000;
 app.listen(port, () => {

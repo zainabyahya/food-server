@@ -5,7 +5,6 @@ var validateNumber = function (number) {
     return re.test(number);
 };
 
-
 const addressSchema = new Schema({
     location: { type: Schema.Types.String, ref: 'Location' },
     street: String,

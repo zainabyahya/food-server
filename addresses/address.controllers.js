@@ -26,7 +26,9 @@ const deleteAddress = async (req, res, next) => {
         if (deletedAddress) {
             res.json({ message: "Address deleted successfully" });
         } else {
-            res.status(404).json({ message: "Address not found" });
+            const err = new Error("العنوان غير موجود")
+            err.status = 404
+            next(err);
         }
     } catch (err) {
         next(err)

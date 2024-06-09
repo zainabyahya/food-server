@@ -107,8 +107,6 @@ const updateBlogPost = async (req, res, next) => {
             newPostData.image = imageURL;
         }
 
-        console.log("🚀 ~ updateBlogPost ~ newPostData:", newPostData)
-
         const updatedBlogPost = await BlogPost.findByIdAndUpdate(postId, newPostData, { new: true });
         res.status(201).json({ updatedBlogPost });
     } catch (error) {

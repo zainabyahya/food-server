@@ -59,7 +59,9 @@ const deleteBookmark = async (req, res, next) => {
         );
 
         if (!updatedBookmark) {
-            return res.status(404).json({ message: "Bookmark not found" });
+            const err = new Error("المنشور غير موجود")
+            err.status = 404
+            next(err);
         }
 
         if (updatedBookmark.posts.length === 0) {

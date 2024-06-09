@@ -13,7 +13,6 @@ const getAllComments = async (req, res, next) => {
 const getCommentsByPost = async (req, res, next) => {
     try {
         const { postId } = req.params;
-        console.log("🚀 ~ getCommentsByPost ~ postId:", postId)
         const foundComments = await Comment.find({ post: postId }).populate("user");
         res.status(200).json({ foundComments });
     } catch (error) {
@@ -31,7 +30,6 @@ const addComment = async (req, res, next) => {
 
         const newComment = await Comment.create(newCommentData);
         await BlogPost.findByIdAndUpdate(postId, { $push: { comments: newComment._id } });
-
         res.status(201).json({ newComment });
     } catch (error) {
         next(error);

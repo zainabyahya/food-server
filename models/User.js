@@ -10,11 +10,6 @@ var validateNumber = function (number) {
 const userSchema = new Schema({
     firstName: String,
     lastName: String,
-    username: {
-        type: String,
-        unique: true,
-        required: true
-    },
     phoneNumber: {
         type: String,
         unique: true,
@@ -25,7 +20,6 @@ const userSchema = new Schema({
         type: String,
         trim: true,
         required: 'كلمة السر مطلوبة',
-        minlength: 8,
     },
     image: String,
     bookmark: { type: Schema.Types.ObjectId, ref: 'Bookmark' }

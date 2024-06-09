@@ -17,13 +17,8 @@ const generateToken = (userCredentials) => {
 
 const login = async (req, res, next) => {
     try {
-        console.log("====================");
-        console.log("------------" + req.body);
-
         const phoneNumber = req.body.phoneNumber;
         const password = req.body.password;
-        console.log("🚀 ~ login ~ phoneNumber:", phoneNumber)
-        console.log("=========zzzzz===========");
 
         const foundUser = await User.findOne({ phoneNumber: phoneNumber });
 
@@ -50,21 +45,20 @@ const login = async (req, res, next) => {
 };
 
 const signUp = async (req, res, next) => {
-
     try {
         const existingUser = await User.findOne({ phoneNumber: req.body.phoneNumber });
         if (existingUser) {
-            return res.status(400).json({ message: "phoneNumber already registered" });
+            const err = new Error("رقم الهاتف موجود بالفعل")
+            err.status = 400
+            next(err);
         }
 
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
         req.body.password = hashedPassword;
 
-
         const newUserData = {
             ...req.body,
         };
-
 
         if (req.file) {
             const imageURL = await getFirebaseImgUrl(
@@ -73,7 +67,6 @@ const signUp = async (req, res, next) => {
                 req.file.originalname
             );
             console.log("imageURL" + imageURL);
-
             newUserData.image = imageURL;
         }
 

@@ -72,7 +72,9 @@ const checkConfirmationStatus = async (req, res, next) => {
     try {
         const confirmation = await Confirmation.findById(confirmationId);
         if (!confirmation) {
-            return res.status(404).json({ message: "Confirmation not found" });
+            const err = new Error("confirmation not found")
+            err.status = 404
+            next(err);
         }
         res.status(201).json({ status: confirmation.status });
     } catch (error) {
@@ -85,7 +87,9 @@ const getConfirmationByPostId = async (req, res, next) => {
     try {
         const confirmation = await Confirmation.findOne({ post: postId });
         if (!confirmation) {
-            return res.status(404).json({ message: "Confirmation not found for this post" });
+            const err = new Error("Confirmation not found for this post")
+            err.status = 404
+            next(err);
         }
         res.status(201).json({ confirmation });
     } catch (error) {
@@ -99,7 +103,9 @@ const getConfirmationByUsersIds = async (req, res, next) => {
     try {
         const confirmation = await Confirmation.findOne({ user: userId, owner: ownerId });
         if (!confirmation) {
-            return res.status(404).json({ message: "Confirmation not found for these users" });
+            const err = new Error("Confirmation not found for these users");
+            err.status = 404
+            next(err);
         }
         res.status(201).json({ confirmation });
     } catch (error) {

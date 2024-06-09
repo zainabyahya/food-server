@@ -99,7 +99,9 @@ const getFoodPostById = async (req, res, next) => {
         const { foodPostId } = req.params;
         const foodPost = await FoodPost.findById(foodPostId);
         if (!foodPost) {
-            return res.status(404).json({ error: 'Food post not found' });
+            const err = new Error('Food post not found')
+            err.status = 404
+            next(err);
         }
         res.status(200).json(foodPost);
     } catch (error) {
