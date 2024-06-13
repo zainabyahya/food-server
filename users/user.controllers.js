@@ -48,8 +48,7 @@ const deleteUser = async (req, res, next) => {
 const updateUser = async (req, res, next) => {
     try {
         const userId = req.user.userId;
-        let imageUrl = "images/";
-        let newUserdata = {
+        let newUserData = {
             ...req.body,
         }
         if (req.file) {
@@ -62,7 +61,7 @@ const updateUser = async (req, res, next) => {
 
             newUserData.image = imageURL;
         }
-        const updatedUser = await User.findByIdAndUpdate(userId, newUserdata, { new: true });
+        const updatedUser = await User.findByIdAndUpdate(userId, newUserData, { new: true });
 
         res.status(201).json({ updatedUser });
     } catch (error) {

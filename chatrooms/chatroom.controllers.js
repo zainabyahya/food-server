@@ -2,9 +2,10 @@ const express = require("express");
 const Chatroom = require("../models/Chatroom.js");
 const Message = require("../models/Message.js");
 
-const getAllChatrooms = async (req, res, next) => {
+const getChatroomsByUser = async (req, res, next) => {
     try {
-        const allChatrooms = await Chatroom.find().populate("users");
+        const { userId } = req.params;
+        const allChatrooms = await Chatroom.find({ users: userId }).populate("users");
         res.status(200).json({ allChatrooms });
     } catch (error) {
         next(error);
@@ -42,4 +43,4 @@ const deleteChatroom = async (req, res, next) => {
     }
 };
 
-module.exports = { getAllChatrooms, getChatroomsById, addChatroom, deleteChatroom };
+module.exports = { getChatroomsByUser, getChatroomsById, addChatroom, deleteChatroom };

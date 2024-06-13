@@ -3,14 +3,14 @@ const { Schema, model } = mongoose;
 
 const locationSchema = new Schema({
     longitude: {
-        type: String,
+        type: Number,
         required: true
     },
     latitude: {
-        type: String,
+        type: Number,
         required: true
     }
 });
 
-const Location = mongoose.model('Location', locationSchema);
+const Location = model('Location', locationSchema);
 module.exports = Location;

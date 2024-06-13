@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { getAllMessages,
+const { getMessagesByChatroom,
     getMessagesByUser,
     deleteMessage,
     updateMessage,
@@ -10,7 +10,7 @@ const { getAllMessages,
 const { authenticateToken } = require("../middlewares/auth.js");
 const { isMessageAuthor } = require("../middlewares/isAuthor.js")
 
-router.get("/", getAllMessages);
+router.get("/:chatroomId", getMessagesByChatroom);
 
 router.get("/user/:userId", getMessagesByUser);
 

@@ -2,9 +2,10 @@ const Chatroom = require("../models/Chatroom");
 const Message = require("../models/Message");
 
 
-const getAllMessages = async (req, res, next) => {
+const getMessagesByChatroom = async (req, res, next) => {
     try {
-        const allMessages = await Message.find();
+        const { chatroomId } = req.params;
+        const allMessages = await Message.find({ chatroom: chatroomId });
         res.status(200).json({ allMessages });
     } catch (error) {
         next(error);
@@ -62,4 +63,4 @@ const updateMessage = async (req, res, next) => {
     }
 };
 
-module.exports = { getAllMessages, getMessagesByUser, deleteMessage, updateMessage, addMessage };
+module.exports = { getMessagesByChatroom, getMessagesByUser, deleteMessage, updateMessage, addMessage };

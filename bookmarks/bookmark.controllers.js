@@ -47,31 +47,4 @@ const handleBookmark = async (req, res, next) => {
 };
 
 
-const deleteBookmark = async (req, res, next) => {
-    try {
-        const userId = req.user.userId;
-        const { postId } = req.params;
-
-        const updatedBookmark = await Bookmark.findOneAndUpdate(
-            { user: userId },
-            { $pull: { posts: postId } },
-            { new: true }
-        );
-
-        if (!updatedBookmark) {
-            const err = new Error("المنشور غير موجود")
-            err.status = 404
-            next(err);
-        }
-
-        if (updatedBookmark.posts.length === 0) {
-            await Bookmark.findByIdAndDelete(updatedBookmark._id);
-        }
-
-        res.status(200).json({ message: "Bookmark removed" });
-    } catch (error) {
-        next(error);
-    }
-};
-
-module.exports = { getAllBookmarks, handleBookmark, deleteBookmark, getBookmarksByUser };
+module.exports = { getAllBookmarks, handleBookmark, getBookmarksByUser };

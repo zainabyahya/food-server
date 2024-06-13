@@ -6,7 +6,7 @@ const getFirebaseImgUrl = require("../services/firebaseStorageService");
 
 const getAllBlogPosts = async (req, res, next) => {
     try {
-        const allBlogPosts = await BlogPost.find().populate('author');
+        const allBlogPosts = await BlogPost.find();
         res.status(200).json({ allBlogPosts });
     } catch (error) {
         next(error);
@@ -15,8 +15,8 @@ const getAllBlogPosts = async (req, res, next) => {
 
 const getBlogPostById = async (req, res, next) => {
     try {
-        const { postId } = req.params;
-        const foundBlogPost = await BlogPost.findById(postId).populate('author');
+        const { blogPostId } = req.params;
+        const foundBlogPost = await BlogPost.findById(blogPostId).populate('author');
         res.status(200).json({ foundBlogPost });
     } catch (error) {
         next(error);

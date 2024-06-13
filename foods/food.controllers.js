@@ -4,18 +4,16 @@ const Location = require('../models/Location');
 const getFirebaseImgUrl = require("../services/firebaseStorageService");
 
 const addFoodPost = async (req, res, next) => {
+    console.log("🚀 ~ addFoodPost ~ req:", req.body)
     try {
 
-        const newLocation = new Location({
-            longitude: req.body.longitude,
-            latitude: req.body.latitude
-        });
-        const savedLocation = await newLocation.save();
+        const location = JSON.parse(req.body.location)
+        const newLocation = await Location.create(location);
 
         const currentDate = new Date();
         const newFoodPostData = {
             ...req.body,
-            location: savedLocation,
+            location: newLocation,
             owner: req.user.userId,
             dateCreated: currentDate.toDateString(),
         }
@@ -87,7 +85,7 @@ const deleteFoodPost = async (req, res, next) => {
 
 const getAllFoodPosts = async (req, res, next) => {
     try {
-        const foodPosts = await FoodPost.find();
+        const foodPosts = await FoodPost.find().populate("location");
         res.status(200).json({ foodPosts });
     } catch (error) {
         next(error);
