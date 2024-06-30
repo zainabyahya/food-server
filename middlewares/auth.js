@@ -28,6 +28,7 @@ const authenticateToken = async (req, res, next) => {
             return res.sendStatus(401);
         }
         req.user = result.data;
+        console.log("pass");
         next();
     } catch (error) {
         next(error);

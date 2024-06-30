@@ -45,6 +45,7 @@ const login = async (req, res, next) => {
 };
 
 const signUp = async (req, res, next) => {
+    console.log("🚀 ~ signUp ~ req:", req.body)
     try {
         const existingUser = await User.findOne({ phoneNumber: req.body.phoneNumber });
         if (existingUser) {
@@ -66,11 +67,12 @@ const signUp = async (req, res, next) => {
                 req.file.path,
                 req.file.originalname
             );
-            console.log("imageURL" + imageURL);
             newUserData.image = imageURL;
         }
+        console.log("🚀 ~ signUp ~ newUserData:", newUserData)
 
         const newUser = await User.create(newUserData);
+        console.log("🚀 ~ signUp ~ newUser:", newUser)
         const generatedToken = generateToken(newUser);
         res.status(201).json({ generatedToken });
     } catch (error) {

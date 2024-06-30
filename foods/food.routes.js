@@ -7,7 +7,7 @@ const { isFoodAuthor } = require("../middlewares/isAuthor.js");
 
 router.post('/', authenticateToken, fileUpload.single("image"), addFoodPost);
 
-router.put('/:foodPostId', authenticateToken, isFoodAuthor, updateFoodPost);
+router.put('/update/:foodPostId', authenticateToken, isFoodAuthor, updateFoodPost);
 
 router.delete('/:foodPostId', authenticateToken, isFoodAuthor, deleteFoodPost);
 

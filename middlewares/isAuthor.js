@@ -2,6 +2,7 @@ const BlogPost = require("../models/BlogPost");
 const Comment = require("../models/Comment");
 const Message = require("../models/Message");
 const FoodPost = require("../models/FoodPost");
+const mongoose = require("mongoose");
 
 
 const isPostAuthor = async (req, res, next) => {
@@ -27,6 +28,7 @@ const isFoodAuthor = async (req, res, next) => {
     try {
         const foodPostId = req.params.foodPostId;
         const post = await FoodPost.findById(foodPostId);
+        console.log("🚀 ~ isFoodAuthor ~ post:", post)
         if (!post) {
             return res.status(404).send('Post not found');
         }

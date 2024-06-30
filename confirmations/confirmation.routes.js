@@ -12,6 +12,6 @@ router.get('/:conId/status', checkConfirmationStatus);
 
 router.get('/post/:postId', getConfirmationByPostId);
 
-router.get('/users/:userId/:ownerId', getConfirmationByUsersIds);
+router.get('/users', getConfirmationByUsersIds);
 
 module.exports = router;

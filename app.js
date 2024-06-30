@@ -31,7 +31,7 @@ app.use("/bookmarks", bookmarkRoutes);
 app.use("/chatrooms", chatroomRoutes);
 app.use("/food", foodRoutes);
 app.use("/comments", commentRoutes);
-app.use("/confirmations", confirmationRoutes);
+app.use("/confirmation", confirmationRoutes);
 app.use("/messages", messageRoutes);
 app.use("/users", userRoutes);
 

@@ -6,7 +6,7 @@ const getFirebaseImgUrl = require("../services/firebaseStorageService");
 
 const getAllBlogPosts = async (req, res, next) => {
     try {
-        const allBlogPosts = await BlogPost.find();
+        const allBlogPosts = await BlogPost.find().populate('author');
         res.status(200).json({ allBlogPosts });
     } catch (error) {
         next(error);
@@ -26,7 +26,7 @@ const getBlogPostById = async (req, res, next) => {
 const getBlogPostByAuthor = async (req, res, next) => {
     try {
         const { authorId } = req.params;
-        const foundBlogPosts = await BlogPost.find({ author: authorId });
+        const foundBlogPosts = await BlogPost.find({ author: authorId }).populate("author");
         res.status(200).json({ foundBlogPosts });
     } catch (error) {
         next(error);
@@ -34,6 +34,7 @@ const getBlogPostByAuthor = async (req, res, next) => {
 };
 
 const addBlogPost = async (req, res, next) => {
+    console.log("🚀 ~ addBlogPost ~ req:", req.body)
     try {
         const newBlogPostData = {
             ...req.body,
@@ -61,23 +62,25 @@ const addBlogPost = async (req, res, next) => {
 };
 
 const deleteBlogPost = async (req, res, next) => {
+    console.log("🚀 ~ deleteBlogPost ~ req:", req.blog)
     try {
         const postId = req.params.blogPostId;
+        console.log("🚀 ~ deleteBlogPost ~ postId:", postId)
         const foundPost = await BlogPost.findByIdAndDelete(postId);
 
-        if (foundPost.image) {
-            const imageName = foundPost.image.replace(/^images\//, "");
-            const staticPath = path.join(path.dirname(""), "static/images");
-            const imagePath = path.join(staticPath, imageName);
+        // if (foundPost.image) {
+        //     const imageName = foundPost.image.replace(/^images\//, "");
+        //     const staticPath = path.join(path.dirname(""), "static/images");
+        //     const imagePath = path.join(staticPath, imageName);
 
-            if (fs.existsSync(imagePath)) {
-                fs.unlink(imagePath, (err) => {
-                    if (err) {
-                        return res.status(500).json({ error: "Error deleting post image" });
-                    }
-                });
-            }
-        }
+        //     if (fs.existsSync(imagePath)) {
+        //         fs.unlink(imagePath, (err) => {
+        //             if (err) {
+        //                 return res.status(500).json({ error: "Error deleting post image" });
+        //             }
+        //         });
+        //     }
+        // }
         await Bookmark.updateMany(
             { posts: postId },
             { $pull: { posts: postId } }
@@ -90,9 +93,9 @@ const deleteBlogPost = async (req, res, next) => {
 };
 
 const updateBlogPost = async (req, res, next) => {
+    console.log("🚀 ~ updateBlogPost ~ req:", req.body)
 
     try {
-        console.log(req.body);
         let newPostData = { ...req.body };
         const postId = req.params.blogPostId;
 

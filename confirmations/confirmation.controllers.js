@@ -7,12 +7,14 @@ function checkUserAuthorization(confirmation, userId) {
 }
 
 async function updateConfirmationStatus(confirmation) {
-    if (confirmation.confirmedByOwner && confirmation.confirmedByUser) {
+    if (confirmation.confirmedByOwner === "confirmed" && confirmation.confirmedByUser === "confirmed") {
         confirmation.status = "confirmed";
-    } else if (confirmation.confirmedByOwner || confirmation.confirmedByUser) {
+    } else if (confirmation.confirmedByOwner === "confirmed" || confirmation.confirmedByUser === "confirmed") {
         confirmation.status = "partiallyConfirmed";
-    } else {
+    } else if (confirmation.confirmedByOwner === "rejected" || confirmation.confirmedByUser === "rejected") {
         confirmation.status = "rejected";
+    } else {
+        confirmation.status = "pending";
     }
     await confirmation.save();
     return confirmation.status;
@@ -22,19 +24,32 @@ const createConfirmation = async (req, res, next) => {
     try {
         const confirmationData = {
             ...req.body,
+            user: req.user.userId,
             status: "pending"
         }
+        const checkCon = await Confirmation.findOne({ post: confirmationData.post })
+        if (!checkCon) {
+            const newConfirmation = await Confirmation.create(confirmationData);
+            console.log("🚀 ~ createConfirmation ~ newConfirmation:", newConfirmation)
 
-        const newConfirmation = await Confirmation.create(confirmationData);
-        res.status(201).json({ newConfirmation });
+            res.status(201).json({ newConfirmation });
+
+        } else {
+            res.status(204).json({ "message": "confirmation already exists." })
+        }
     } catch (error) {
         next(error);
     }
 };
 
 const updateConfirmation = async (req, res, next) => {
+    console.log("🚀 ~ updateConfirmation ~ req:", req.body)
     const confirmationId = req.params.conId;
+    console.log("🚀 ~ updateConfirmation ~ confirmationId:", confirmationId)
     const userId = req.user.userId;
+    const { confirmedByOwner, confirmedByUser } = req.body;
+    console.log("🚀 ~ updateConfirmation ~ confirmedByUser:", confirmedByUser)
+    console.log("🚀 ~ updateConfirmation ~ confirmedByOwner:", confirmedByOwner)
     try {
         const confirmation = await Confirmation.findById(confirmationId);
         if (!confirmation) {
@@ -45,6 +60,7 @@ const updateConfirmation = async (req, res, next) => {
         }
         const allowedUpdates = ['confirmedByOwner', 'confirmedByUser'];
         const updates = Object.keys(req.body).reduce((acc, key) => {
+            console.log(acc, key);
             if (allowedUpdates.includes(key)) {
                 acc[key] = req.body[key];
             }
@@ -98,19 +114,20 @@ const getConfirmationByPostId = async (req, res, next) => {
 };
 
 const getConfirmationByUsersIds = async (req, res, next) => {
-    const userId = req.params.userId;
-    const ownerId = req.params.ownerId;
-    try {
-        const confirmation = await Confirmation.findOne({ user: userId, owner: ownerId });
-        if (!confirmation) {
-            const err = new Error("Confirmation not found for these users");
-            err.status = 404
-            next(err);
-        }
-        res.status(201).json({ confirmation });
-    } catch (error) {
-        next(error);
-    }
+    const { users } = req.body
+    console.log("🚀 ~ getConfirmationByUsersIds ~ req.body:", req.body)
+    console.log("🚀 ~ getConfirmationByUsersIds ~ users:", users)
+    // try {
+    //     const confirmation = await Confirmation.findOne({ user: userId, owner: ownerId });
+    //     if (!confirmation) {
+    //         const err = new Error("Confirmation not found for these users");
+    //         err.status = 404
+    //         next(err);
+    //     }
+    //     res.status(201).json({ confirmation });
+    // } catch (error) {
+    //     next(error);
+    // }
 };
 
 module.exports = { getConfirmationByPostId, getConfirmationByUsersIds, createConfirmation, checkConfirmationStatus, updateConfirmation };

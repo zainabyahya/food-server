@@ -3,7 +3,7 @@ const router = express.Router();
 const { getChatroomsByUser, getChatroomsById, addChatroom, deleteChatroom } = require("./chatroom.controllers");
 const { authenticateToken } = require("../middlewares/auth.js");
 
-router.get("/userId", getChatroomsByUser);
+router.get("/user/:userId", getChatroomsByUser);
 
 router.get("/:chatroomId", getChatroomsById);
 

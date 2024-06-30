@@ -25,14 +25,22 @@ const getChatroomsById = async (req, res, next) => {
 const addChatroom = async (req, res, next) => {
     try {
         const { users } = req.body;
-        const newChatroom = await Chatroom.create({ users: users });
+        const sortedUsers = users.sort();
 
-        res.status(201).json({ newChatroom });
+        const checkChatroom = await Chatroom.findOne({ users: sortedUsers });
+
+        if (checkChatroom) {
+            return res.status(200).json({ chatroom: checkChatroom });
+        }
+
+        const newChatroom = await Chatroom.create({ users: sortedUsers });
+        return res.status(201).json({ chatroom: newChatroom });
+
     } catch (error) {
         next(error);
     }
-
 };
+
 const deleteChatroom = async (req, res, next) => {
     try {
         const { chatroomId } = req.params;

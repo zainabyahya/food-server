@@ -6,7 +6,6 @@ var validateNumber = function (number) {
     return re.test(number);
 };
 
-
 const userSchema = new Schema({
     firstName: String,
     lastName: String,
@@ -22,6 +21,14 @@ const userSchema = new Schema({
         required: 'كلمة السر مطلوبة',
     },
     image: String,
+    ratingSum: {
+        type: Number,
+        default: 0,
+    },
+    ratingCount: {
+        type: Number,
+        default: 0,
+    },
     bookmark: { type: Schema.Types.ObjectId, ref: 'Bookmark' }
 });
 

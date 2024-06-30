@@ -13,7 +13,13 @@ const getAllBookmarks = async (req, res, next) => {
 const getBookmarksByUser = async (req, res, next) => {
     try {
         const userId = req.params.userId;
-        const userBookmarks = await Bookmark.findOne({ user: userId }).populate('posts');
+        const userBookmarks = await Bookmark.findOne({ user: userId }).populate('posts').populate({
+            path: 'posts',
+            populate: {
+                path: 'author',
+                model: 'User'
+            }
+        });;
         res.status(200).json({ userBookmarks });
     } catch (error) {
         next(error);
@@ -23,7 +29,7 @@ const getBookmarksByUser = async (req, res, next) => {
 const handleBookmark = async (req, res, next) => {
     try {
         const userId = req.user.userId;
-        const postId = req.body.postId;
+        const postId = req.body.postId.postId;
 
         let bookmark = await Bookmark.findOne({ user: userId });
 

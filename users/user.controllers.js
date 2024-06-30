@@ -3,20 +3,28 @@ const fs = require("fs");
 const User = require("../models/User.js");
 const getFirebaseImgUrl = require("../services/firebaseStorageService");
 
-const getAllUsers = async (req, res, next) => {
-    try {
-        const allUsers = await User.find();
-        res.status(200).json({ allUsers });
-    } catch (error) {
-        next(error);
-    }
-};
 
 const getUserById = async (req, res, next) => {
     try {
         const { userId } = req.params;
         const foundUser = await User.findById(userId);
         res.status(200).json({ foundUser });
+    } catch (error) {
+        next(error);
+    }
+};
+
+const updateUserRating = async (req, res, next) => {
+    try {
+        const userId = req.body.id;
+        const rating = req.body.rating;
+        const foundUser = await User.findById(userId);
+        const ratingInfo = {
+            ratingSum: foundUser.ratingSum + rating,
+            ratingCount: foundUser.ratingCount + 1,
+        };
+        const updatedUser = await User.findByIdAndUpdate(userId, ratingInfo, { new: true });
+        res.status(200).json({ updatedUser });
     } catch (error) {
         next(error);
     }
@@ -48,9 +56,12 @@ const deleteUser = async (req, res, next) => {
 const updateUser = async (req, res, next) => {
     try {
         const userId = req.user.userId;
+        console.log("🚀 ~ updateUser ~ userId:", userId)
         let newUserData = {
             ...req.body,
         }
+        console.log("🚀 ~ updateUser ~ newUserData:", newUserData)
+
         if (req.file) {
             const imageURL = await getFirebaseImgUrl(
                 "profile-images",
@@ -69,4 +80,4 @@ const updateUser = async (req, res, next) => {
     }
 };
 
-module.exports = { getAllUsers, getUserById, deleteUser, updateUser };
+module.exports = { getUserById, deleteUser, updateUser, updateUserRating };

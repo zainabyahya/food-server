@@ -1,5 +1,6 @@
 const Comment = require("../models/Comment.js");
 const BlogPost = require("../models/BlogPost.js");
+const mongoose = require("mongoose");
 
 const getAllComments = async (req, res, next) => {
     try {
@@ -40,7 +41,7 @@ const deleteComment = async (req, res, next) => {
         const { commentId } = req.params;
 
         const foundComment = await Comment.findByIdAndDelete(commentId);
-        await BlogPost.findByIdAndDelete(foundComment.post, { $pull: { comments: foundComment._id } });
+        await BlogPost.findByIdAndUpdate(foundComment.post, { $pull: { comments: foundComment._id } });
 
         res.status(204).end();
     } catch (error) {

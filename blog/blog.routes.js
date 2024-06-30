@@ -16,6 +16,6 @@ router.post("/", authenticateToken, fileUpload.single("image"), addBlogPost);
 
 router.delete('/:blogPostId', authenticateToken, isPostAuthor, deleteBlogPost);
 
-router.put('/:blogPostId', authenticateToken, isPostAuthor, fileUpload.single("image"), updateBlogPost);
+router.put('/update/:blogPostId', authenticateToken, isPostAuthor, fileUpload.single("image"), updateBlogPost);
 
 module.exports = router;

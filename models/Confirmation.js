@@ -6,8 +6,18 @@ const confirmationSchema = new Schema({
     user: { type: Schema.Types.ObjectId, ref: 'User' },
     post: { type: Schema.Types.ObjectId, ref: 'BlogPost' },
     status: { type: Schema.Types.String, ref: 'Status' },
-    confirmedByOwner: { type: Boolean, default: false },
-    confirmedByUser: { type: Boolean, default: false },
+    confirmedByOwner: {
+        type: String,
+        enum: ['pending', 'confirmed', 'rejected'
+        ],
+        default: "pending"
+
+    },
+    confirmedByUser: {
+        type: String,
+        enum: ['pending', 'confirmed', 'rejected'],
+        default: "pending"
+    },
 });
 
 

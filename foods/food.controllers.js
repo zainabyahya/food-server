@@ -1,5 +1,6 @@
 const FoodPost = require('../models/FoodPost');
 const Location = require('../models/Location');
+const mongoose = require("mongoose");
 
 const getFirebaseImgUrl = require("../services/firebaseStorageService");
 
@@ -35,11 +36,15 @@ const addFoodPost = async (req, res, next) => {
 };
 
 const updateFoodPost = async (req, res, next) => {
+    console.log("🚀 ~ updateFoodPost ~ req:", req.body)
     try {
         const { foodPostId } = req.params;
+        console.log("🚀 ~ updateFoodPost ~ foodPostId:", foodPostId)
         const newPostData = {
             ...req.body,
         }
+        console.log("🚀 ~ updateFoodPost ~ newPostData:", newPostData)
+
         if (req.file) {
             const imageURL = await getFirebaseImgUrl(
                 "food-images",
@@ -52,6 +57,7 @@ const updateFoodPost = async (req, res, next) => {
         }
 
         const updatedFoodPost = await FoodPost.findByIdAndUpdate(foodPostId, newPostData, { new: true });
+        console.log("🚀 ~ updateFoodPost ~ updatedFoodPost:", updatedFoodPost)
         res.status(200).json({ updatedFoodPost });
     } catch (error) {
         next(error);
@@ -85,7 +91,7 @@ const deleteFoodPost = async (req, res, next) => {
 
 const getAllFoodPosts = async (req, res, next) => {
     try {
-        const foodPosts = await FoodPost.find().populate("location");
+        const foodPosts = await FoodPost.find().populate("location").populate("owner");
         res.status(200).json({ foodPosts });
     } catch (error) {
         next(error);
@@ -94,8 +100,11 @@ const getAllFoodPosts = async (req, res, next) => {
 
 const getFoodPostById = async (req, res, next) => {
     try {
+
         const { foodPostId } = req.params;
-        const foodPost = await FoodPost.findById(foodPostId);
+        console.log("🚀 ~ getFoodPostById ~ req.params:", req.params)
+        console.log("🚀 ~ getFoodPostById ~ foodPostId:", foodPostId)
+        const foodPost = await FoodPost.findById(foodPostId).populate("owner").populate("location");
         if (!foodPost) {
             const err = new Error('Food post not found')
             err.status = 404
@@ -110,7 +119,7 @@ const getFoodPostById = async (req, res, next) => {
 const getFoodPostByOwner = async (req, res, next) => {
     try {
         const { ownerId } = req.params;
-        const foodPosts = await FoodPost.find({ owner: ownerId });
+        const foodPosts = await FoodPost.find({ owner: ownerId }).populate("owner");
         res.status(200).json(foodPosts);
     } catch (error) {
         next(error);
