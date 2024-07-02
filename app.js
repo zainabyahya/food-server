@@ -49,7 +49,7 @@ app.use('*', (req, res) => {
 
 app.use(errorHandling)
 
-const port = 8000;
+const port = process.env.PORT || 8000;
 app.listen(port, () => {
   console.log(`The server is running on port ${port}`);
 });
